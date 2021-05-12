@@ -1,5 +1,7 @@
-import { withApollo as withApolloLib } from 'next-apollo'
-import { getStaticApolloProps as getStaticApolloPropsLib } from 'lib/getStaticApolloProps'
+import {
+  withApollo as withApolloLib,
+  getStaticApolloProps as getStaticApolloPropsLib
+} from 'next-apollo'
 
 import createApolloClient from './createApolloClient'
 
