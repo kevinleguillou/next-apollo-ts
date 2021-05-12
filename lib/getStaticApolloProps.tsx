@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from 'querystring'
 
-import { ApolloClient, ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client'
 import { GetStaticProps } from 'next'
 import apolloStatic from 'components/withApollo/apolloStatic'
 import type { NextRouter } from 'next/dist/next-server/lib/router/router'
@@ -11,20 +11,6 @@ export type StaticApolloProps = {
   generatedAt: string
   revalidate?: number | null
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type GenericProps = { [key: string]: any }
-
-type StaticApolloPropsCallback<
-  TStaticProps extends GenericProps = GenericProps,
-  TParams extends ParsedUrlQuery = ParsedUrlQuery
-> = ({
-  apolloClient,
-  params
-}: {
-  apolloClient: ApolloClient<object>
-  params: TParams
-}) => TStaticProps | Promise<TStaticProps>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const notImplemented = (..._args: any): any => {
@@ -52,14 +38,11 @@ const baseFakeRouter = {
 }
 
 export default function getStaticApolloProps<
-  TStaticProps extends GenericProps = GenericProps,
   TParams extends ParsedUrlQuery = ParsedUrlQuery
 >(
-  Page: React.ComponentType<TStaticProps>,
-  { revalidate }: { revalidate?: number } = {},
-  callback: StaticApolloPropsCallback<TStaticProps, TParams> = async () =>
-    ({} as TStaticProps)
-): GetStaticProps<StaticApolloProps & TStaticProps, TParams> {
+  Page: React.ComponentType<{}>,
+  { revalidate }: { revalidate?: number } = {}
+): GetStaticProps<StaticApolloProps, TParams> {
   return async (context) => {
     const { params, locales, locale, defaultLocale } = context
     // https://github.com/vercel/next.js/blob/48acc479f3befb70de800392315831ed7defa4d8/packages/next/next-server/lib/router/router.ts#L250-L259
@@ -78,15 +61,10 @@ export default function getStaticApolloProps<
 
     const apolloClient = apolloStatic()
 
-    const otherProps: TStaticProps = await callback({
-      apolloClient,
-      params: params!
-    })
-
     const PrerenderComponent = () => (
       <ApolloProvider client={apolloClient}>
         <RouterContext.Provider value={router}>
-          <Page {...otherProps} />
+          <Page />
         </RouterContext.Provider>
       </ApolloProvider>
     )
@@ -97,8 +75,7 @@ export default function getStaticApolloProps<
       props: {
         apolloState: apolloClient.cache.extract(),
         generatedAt: new Date().toISOString(),
-        revalidate: revalidate || null,
-        ...otherProps
+        revalidate: revalidate || null
       },
       revalidate
     }
