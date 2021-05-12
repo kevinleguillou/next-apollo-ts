@@ -1,6 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import { withApollo } from 'components/withApollo'
-import getStaticApolloProps from 'lib/getStaticApolloProps'
+import { withApollo, getStaticApolloProps } from 'components/withApollo'
 
 const QUERY = gql`
   query Weather {

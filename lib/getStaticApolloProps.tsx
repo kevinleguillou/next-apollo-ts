@@ -1,8 +1,7 @@
 import { ParsedUrlQuery } from 'querystring'
 
-import { ApolloProvider } from '@apollo/client'
+import { ApolloClient, ApolloProvider } from '@apollo/client'
 import { GetStaticProps } from 'next'
-import apolloStatic from 'components/withApollo/apolloStatic'
 import type { NextRouter } from 'next/dist/next-server/lib/router/router'
 import React from 'react'
 
@@ -37,12 +36,13 @@ const baseFakeRouter = {
   isReady: false
 }
 
-export default function getStaticApolloProps<
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getStaticApolloProps = (apolloClient: ApolloClient<any>) => <
   TParams extends ParsedUrlQuery = ParsedUrlQuery
 >(
   Page: React.ComponentType<{}>,
   { revalidate }: { revalidate?: number } = {}
-): GetStaticProps<StaticApolloProps, TParams> {
+): GetStaticProps<StaticApolloProps, TParams> => {
   return async (context) => {
     const { params, locales, locale, defaultLocale } = context
     // https://github.com/vercel/next.js/blob/48acc479f3befb70de800392315831ed7defa4d8/packages/next/next-server/lib/router/router.ts#L250-L259
@@ -58,8 +58,6 @@ export default function getStaticApolloProps<
     const { RouterContext } = await import(
       'next/dist/next-server/lib/router-context'
     )
-
-    const apolloClient = apolloStatic()
 
     const PrerenderComponent = () => (
       <ApolloProvider client={apolloClient}>
