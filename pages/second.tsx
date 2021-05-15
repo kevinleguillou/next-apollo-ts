@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { withApollo, getStaticApolloProps } from 'components/withApollo'
 import Link from 'next/Link'
 
 const QUERY = gql`
   query Weather {
-    getCityByName(name: "Tokyo") {
+    getCityByName(name: "Paris") {
       name
       weather {
         temperature {
@@ -29,7 +29,7 @@ function PostsPage() {
   return (
     <>
       <pre>{JSON.stringify(initalData, null, 2)}</pre>
-      <Link href="/second">second</Link>
+      <Link href="/">index</Link>
     </>
   )
 }
