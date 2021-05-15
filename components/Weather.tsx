@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 const QUERY = gql`
@@ -21,11 +20,9 @@ export const Weather = ({ city }: { city: string }) => {
     variables: { city }
   })
 
-  const [initialData] = useState({ data })
-
   const result = data?.getCityByName
   if (!result) {
     return <div>Loading...</div>
   }
-  return <pre>{JSON.stringify(initialData, null, 2)}</pre>
+  return <pre>{JSON.stringify(data, null, 2)}</pre>
 }
